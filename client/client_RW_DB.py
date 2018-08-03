@@ -32,7 +32,7 @@ Now_date=str(now.isoformat())
 url = "http://demofrontapi.francecentral.cloudapp.azure.com"
 url_send_write = url+":877/customerupdate"
 url_send_read = url+":877/customerrequest"
-FILESIZE=0.01
+FILESIZE=0.1
 
 
 # Randomizing some inputs
@@ -57,6 +57,7 @@ def DataCreation ():
   sizecharstring = 4
   JobRole  = randomstring ( sizecharstring )
   #Filling data
+  STRUserUUID1 = "EbDCxIfcGLRCLuxEv5WBVIiYT7EvjyYB"
   datas_write = {'CurrentMail': CurrentMail, 'STRUserUUID1': STRUserUUID1, 'FirstName': FirstName, 'LastName': LastName,  'CurrentCompany': CurrentCompany, 'JobRole': JobRole  }
   #datas_read = {'STRUserUUID1': STRUserUUID1 }
   STRUserUUID1_read = "EbDCxIfcGLRCLuxEv5WBVIiYT7EvjyYB"
@@ -68,7 +69,7 @@ def DataCreation ():
 #Create a file filled with random caracteres
 def create_random_file(FILESIZE):
   global filename
-  print "*** DEBUG FUNCTION create_random_file // filesize is %sMB and owner is %s " % (str(FILESIZE),client_name)
+  #print "*** DEBUG CLIENT FUNCTION create_random_file // filesize is %sMB and owner is %s " % (str(FILESIZE),client_name)
   #filename="%sfilesize_%s_MB_%s.txt" % (client_name,str(FILESIZE),Now_date)
   filename="%s_datafile.txt" % (client_name)
   inc=Decimal(FILESIZE)
@@ -79,10 +80,10 @@ def create_random_file(FILESIZE):
   return filename
 
 #Create a function to send data using python requuest
-def send_request_write(datas_var,url_var):
+def send_request_write(datas_var,url_var,thread_number):
   a = datetime.datetime.now()
-  print datas_var
-  print url_var
+  #print datas_var
+  #print url_var
   payload = datas_var
   create_random_file(FILESIZE)
   local_file_to_send = filename
@@ -95,13 +96,13 @@ def send_request_write(datas_var,url_var):
   c = b - a
   elapsed_time_request_microsecond = c.microseconds
   elapsed_time_request_millisec = (elapsed_time_request_microsecond/1000)
-  print "*** DEBUG FUNCTION send_request // REQUEST TOOK %s IF FORMAT MS" % elapsed_time_request_millisec
+  print "*** DEBUG CLIENT FUNCTION WRITE THREAD %s / UPFILE AND DB TOOK %s MILS / STATUS CODE %s " % (thread_number,elapsed_time_request_millisec,r.status_code)
 
 #creating a function to read data
-def send_request_read(datas_var,url_var):
+def send_request_read(datas_var,url_var,thread_number):
   a = datetime.datetime.now()
-  print datas_var
-  print url_var
+  #print datas_var
+  #print url_var
   payload = datas_var
   files = {
          'json': (None, json.dumps(payload), 'application/json')
@@ -111,16 +112,16 @@ def send_request_read(datas_var,url_var):
   c = b - a
   elapsed_time_request_microsecond = c.microseconds
   elapsed_time_request_millisec = (elapsed_time_request_microsecond/1000)
-  print "*** DEBUG FUNCTION send_request // REQUEST TOOK %s IF FORMAT MS" % elapsed_time_request_millisec
+  print "*** DEBUG CLIENT FUNCTION READ THREAD %s / DB SEARCH & READ TOOK %s MILS / STATUS CODE %s "  % (thread_number,elapsed_time_request_millisec,r.status_code)
 
 #Create a random number of users to simulates random number of parrallele request
-def parallel_requests_random (randmovalue):
-  print "\n "
-  print "*** DEBUG FUNCTION parallel_requests_random random request in parallele will be : %s " % (randmovalue)
+def parallel_requests_random (randmovalue,increment_counter):
+  #print "*** DEBUG CLIENT FUNCTION // Total random request in parallele will be : %s " % (randmovalue)
   for i in range (0,randmovalue):
     datas_write,datas_read = DataCreation()
-    Process_send_request_write = Process(target=send_request_write, args=(datas_write,url_send_write, ))
-    Process_send_request_read = Process(target=send_request_read, args=(datas_read,url_send_read, ))
+    thread_number = str(increment_counter)+str(i)
+    Process_send_request_write = Process(target=send_request_write, args=(datas_write,url_send_write,thread_number, ))
+    Process_send_request_read = Process(target=send_request_read, args=(datas_read,url_send_read,thread_number, ))
     Process_send_request_write.start()
     Process_send_request_read.start()
   print "\n "
@@ -129,14 +130,15 @@ def parallel_requests_random (randmovalue):
 def serial_calls_timer():
     i=0
     for i in range(0,3):
-      print "\n "
-      print "*** DEBUG FUNCTION serial_calls_timer started hread # %s " % (i)
-      randmovalue = randint(1, 3)
-      parallel_requests_random (randmovalue)
-      time.sleep(0.5)#Wait X second and restart
+      #print "*** DEBUG CLIENT FUNCTION serial_calls_timer started hread # %s " % (i)
+      increment_counter = i
+      randmovalue = randint(1, 4)
+      parallel_requests_random (randmovalue,increment_counter)
+      time.sleep(1)#Wait X second and restart
       datas_write,datas_read = DataCreation()
-      #send_request_read(datas_read,url_send_read)
-      #send_request_write(datas_write,url_send_write)
+      #thread_number = i 
+      #send_request_read(datas_read,url_send_read,thread_number)
+      #send_request_write(datas_write,url_send_write,thread_number)
 
 
 serial_calls_timer()

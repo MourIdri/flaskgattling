@@ -24,7 +24,7 @@ app.debug = True
 class OPERATIONS(Resource):
         @app.route('/',methods=['GET'])
         def hello_world():
-            return 'Hello World! Welcome to the Azure MySQL and Blob API Wrapper WRITTER'
+            return 'Hello World! Welcome to the Azure MySQL and Blob API Wrapper Can try using Curl  '
 
         @app.route('/customerupdate',methods=['POST'])
         def customerupdate():
@@ -39,18 +39,13 @@ class OPERATIONS(Resource):
             #getting the file and storing it
             f = request.files['file']
             f.save(secure_filename(f.filename))
-            print "*** DEBUG FUNCTION FILE SAVED LOCALY"
             #now store data in a MysqlDatabase
             str_json_echoed = json.dumps(MetdatasDICT)
-            print "*** DEBUG FUNCTION customerupdate json_echoed...%s" % (str_json_echoed )
             script_tosend_to = "db_operations_v9_write.py"
             python_cmd = "python %s" %(script_tosend_to)
             cmd= "echo '" + str_json_echoed + "' | "+ python_cmd
-            print "*** DEGUB FUNCTION Will apply CMD :  \n  "
-            print "\n*** DEBUG FUNCTION customerupdate cmd...%s\n" % (cmd )
             os.system(cmd)
-            print "\n*** DEGUB FUNCTION.py applied CMD "
-            return '*** DEBUG FUNCTION customerupdate FNISHED '
+            return '*** DEBUG SERVER FUNCTION customerupdate FNISHED '
 
         @app.route('/customerrequest',methods=['POST'])
         def customerrequest():
@@ -62,22 +57,18 @@ class OPERATIONS(Resource):
             MetdatasFromJSON0 = MetdatasFromJSON[0]
             strMetdatasFromJSON0 = str(MetdatasFromJSON0)
             MetdatasDICT = ast.literal_eval(strMetdatasFromJSON0)
+            print MetdatasDICT
             for key in MetdatasDICT :
                 STRUserUUID1 = MetdatasDICT["STRUserUUID1"]
             keyword = STRUserUUID1
-            print "*** DEBUG FUNCTION FILE SAVED LOCALY"
+            #getting the file and storing it
             #now store data in a MysqlDatabase
             str_json_echoed = json.dumps(MetdatasDICT)
-            print "*** DEBUG FUNCTION customerupdate json_echoed...%s" % (str_json_echoed )
-            return '*** DEBUG FUNCTION search_data_fromDB FNISHED '
             script_tosend_to = "db_operations_v9_read.py"
             python_cmd = "python %s" %(script_tosend_to)
             cmd= "echo '" + str_json_echoed + "' | "+ python_cmd
-            print "*** DEGUB FUNCTION Will apply CMD :  \n  "
-            print "\n*** DEBUG FUNCTION customerupdate cmd...%s\n" % (cmd )
             os.system(cmd)
-            print "\n*** DEGUB FUNCTION.py applied CMD "
-            return '*** DEBUG FUNCTION customerrequest FNISHED '
+            return '*** DEBUG SERVER FUNCTION customerrequest FNISHED '
 
 
 print "*** DEBUG FUNCTION This process has the pid", os.getpid()
