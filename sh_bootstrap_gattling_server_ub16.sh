@@ -4,7 +4,7 @@ sudo apt-get update -y
 # install PHP and MySQL
 sudo apt-get install git ifstat inetutils-traceroute traceroute telnet curl python python-pip python3 python3-pip libapache2-mod-python libapache2-mod-php php-mysql -y
 sudo apt-get install mysql-client -y
-sudo pip install requests flask ConfigParser mysql-connector-python flask-restful ast 
+sudo pip install requests flask ConfigParser mysql-connector-python flask-restful ast mysql-connector-python-rf
 sudo pip3 install requests
 sudo apt-get remove apache2 -y 
 
