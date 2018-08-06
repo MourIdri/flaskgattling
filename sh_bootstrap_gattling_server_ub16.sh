@@ -24,5 +24,6 @@ sudo chmod a+rwx /APP/*
 
 
 cd /APP/flaskgattling/server/
-
+cp /APP/flaskgattling/server/rc.local /etc/rc.local
+chmod 777 /etc/rc.local
 sudo python restarter.py &echo "Script restarter.py done app has been started as a thread "
