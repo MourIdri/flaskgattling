@@ -25,4 +25,4 @@ sudo chmod a+rwx /APP/*
 
 cd /APP/flaskgattling/server/
 
-sudo python server_python_request_gattling_write.py & server_python_request_gattling_read.py &echo "Script done app has been started as a thread "
+sudo python restarter.py &echo "Script restarter.py done app has been started as a thread "
