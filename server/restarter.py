@@ -1,6 +1,4 @@
-
-#!/usr/bin/python
-# sudo pip install inotify 
+#!/usr/bin/env python
 
 
 import os
