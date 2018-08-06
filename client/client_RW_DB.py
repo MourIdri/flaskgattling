@@ -1,4 +1,3 @@
-
 import os
 import threading
 import multiprocessing
@@ -29,10 +28,11 @@ now = datetime.datetime.now()
 Now_date=str(now.isoformat())
 
 #Put your target server IP or URL and the average file size that will be uploaded
-url = "http://demofrontapi.francecentral.cloudapp.azure.com"
+url_old = "http://demofrontapi.francecentral.cloudapp.azure.com"
+url = "http://flaskservergattling0.westeurope.cloudapp.azure.com"
 url_send_write = url+":877/customerupdate"
 url_send_read = url+":877/customerrequest"
-FILESIZE=0.1
+FILESIZE=0.01
 
 
 # Randomizing some inputs
@@ -129,14 +129,14 @@ def parallel_requests_random (randmovalue,increment_counter):
 #Call the random user call every X second to simulate the operation for a given periode of time.
 def serial_calls_timer():
     i=0
-    for i in range(0,3):
+    for i in range(0,600):
       #print "*** DEBUG CLIENT FUNCTION serial_calls_timer started hread # %s " % (i)
       increment_counter = i
-      randmovalue = randint(1, 4)
+      randmovalue = randint(1, 10)
       parallel_requests_random (randmovalue,increment_counter)
       time.sleep(1)#Wait X second and restart
       datas_write,datas_read = DataCreation()
-      #thread_number = i 
+      #thread_number = i
       #send_request_read(datas_read,url_send_read,thread_number)
       #send_request_write(datas_write,url_send_write,thread_number)
 
